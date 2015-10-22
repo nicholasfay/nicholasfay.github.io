@@ -64,7 +64,7 @@ function MachineState(el, wp_node, ctl, viewer)
 
     // We may be better off not loading the stuff until it gets drawn
     // FIXME
-    console.log(this);
+    //console.log(this);
     for (var i=0; i<loadables.length; i++) {
 //	console.log ("Loading part");
 	loadables[i].loadData(null, viewer.gl);
@@ -79,7 +79,6 @@ METHODS (MachineState, {
 	this.tp_offset = 0.;
 
 	var sg = treenode.sg;
-
 	if (sg.setToolpathPos)
 	    sg.setToolpathPos(this.control, treenode, this.tp_offset);
     },

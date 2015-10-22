@@ -70,7 +70,6 @@ function setToolpath(l, offset) {
 
 function update_speed(e) {
     var val = e.value;
-    console.log(val);
     getMachineState().setSpeed(val);
 }
 
@@ -90,6 +89,7 @@ function tp_fwd(e) {
 }
 
 function tp_play(e, ui, iter) {
+  //console.log(getGeomView());
     if (flag == true && iter) { //Added in so that play button resets toolpath if played again 
         var val = 0;
         flag = false;
@@ -114,10 +114,35 @@ function tp_play(e, ui, iter) {
   else {
     e.timeout = setTimeout(tp_play, 100, e, false, false);
   }
-
   getMachineState().setToolPos(val);
   redrawView();
 }
+
+function tp_playAll(e, ui, workplan) {
+  console.log(workplan);
+  for (i = 0; i < workplan["children"].length; i++){
+      console.log("I AM LOOPING in the main function" + i);
+      if(workplan["children"].length == 1 && workplan["sg"]["op"]){
+        workplan.setActive();
+        e.timeout = setTimeout(tp_play,1,e,false);
+      }
+     else{
+      e.timeout = setTimeout(tp_playAll,1000,e,false, workplan["children"][i]);
+      }
+  }
+  return;
+}
+
+function tp_playAllDriver(e, ui) {
+  console.log(getGeomView());
+   var workplan = getGeomView()["scenegraph"]["active"];
+
+   for (i = 0; i < workplan["children"].length; i++){
+        console.log("I AM LOOPING In the Driver" + i);
+        e.timeout = setTimeout(tp_playAll,1,e,false, workplan["children"][i]);
+    }
+}
+
 
 function tp_stop(e) {
   cancelTimeout(e.timeout);
@@ -196,6 +221,7 @@ function set_visible(e) {
 <input type="button" value="+" onClick="tp_fwd(this);">
 <input type="button" value="-" onClick="tp_back(this);">
 <input type="button" value="play" onClick="tp_play(this, true, true);">
+<input type="button" value="playAll" onClick="tp_playAllDriver(this, true);">
 </span>
 
 <span class="group">
